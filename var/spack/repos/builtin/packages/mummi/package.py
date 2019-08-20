@@ -34,10 +34,14 @@ class Mummi(PythonPackage):
     depends_on('py-scipy@1.3.0')
     
     # ml
-    depends_on('cudnn@7.5.1-10.1-ppc64le')			#TODO: these settings are for lassen
+    depends_on('cudnn@7.5.1-10.1-ppc64le')			            #TODO: these settings are for lassen
     depends_on('faiss@1.5.3 +python')
-    depends_on('py-theano@1.0.4 +gpu ^cudnn@7.5.1-10.1-ppc64le') #TODO: these settings are for lassen
+    depends_on('py-theano@1.0.4 +gpu ^cudnn@7.5.1-10.1-ppc64le')#TODO: these settings are for lassen
     depends_on('py-keras@2.2.4')
+
+    # maestro
+    #depends_on('py-maestrowf@1.1.4dev1.1')
+    #depends_on('py-maestrowf@flux-dev')
 
     # analysis
     depends_on('talass@process-statistics')
@@ -46,11 +50,11 @@ class Mummi(PythonPackage):
     depends_on('py-matplotlib@3.0.2 +ipython ~tk')
 
     # gromacs
-    depends_on('fftw@3.3.8 +fma simd=vsx')			#TODO: these settings are for lassen
+    depends_on('fftw@3.3.8 +fma simd=vsx')			            #TODO: these settings are for lassen
     depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')	#TODO: these settings are for lassen
 
     # databroker
-    depends_on('databroker@0.6.1 +python build_type=Debug')	#TODO: change to release when dbr is fixed
+    depends_on('databroker@0.6.1 +python build_type=Debug')	    #TODO: change to release when dbr is fixed
 
     # flux
     depends_on('flux-sched@0.7.1 +cuda')

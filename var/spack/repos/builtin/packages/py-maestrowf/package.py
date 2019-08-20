@@ -14,11 +14,13 @@ class PyMaestrowf(PythonPackage):
     url      = "https://github.com/LLNL/maestrowf/archive/v1.1.6.tar.gz"
     git      = "https://github.com/LLNL/maestrowf/"
 
+<<<<<<< HEAD
     maintainers = ['FrankD412']
 
     # git branches
     version('develop', branch='develop')
     version('master',  branch='master')
+    version('flux-dev', git='https://github.com/LLNL/maestrowf.git', branch='bugfix/flux_broker')
 
     # Pre-release candidates
     version('1.1.5dev',    sha256='eb3d6f31c233e2cde3b84e15c657002b83ff43d4d6b218b33d023a4f527b9e08')
