@@ -14,7 +14,6 @@ class PyMaestrowf(PythonPackage):
     url      = "https://github.com/LLNL/maestrowf/archive/v1.1.6.tar.gz"
     git      = "https://github.com/LLNL/maestrowf/"
 
-<<<<<<< HEAD
     maintainers = ['FrankD412']
 
     # git branches

@@ -16,6 +16,7 @@ class Mummi(PythonPackage):
     version('0.3b.0', tag='v0.3b.0') #commit='527f44e4a543f0e44daeab5d1375ce8c610eb9a0')
     version('0.2.0', tag='v0.2.0') #commit='372e85318181530731f191b5a48b747f60bfadd2')
     version('develop', branch='develop')
+    version('python3', branch='python3')
 
     #version('1.0.1', tag='v1.0.1')
     #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
