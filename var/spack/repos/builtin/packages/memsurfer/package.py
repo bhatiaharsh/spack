@@ -23,8 +23,6 @@ class Memsurfer(PythonPackage):
             description='Enable OSMesa support (for VTK)')
 
     extends('python@3.7:')
-    depends_on('python@3.7:', type=('build', 'run'))
-
     depends_on('cmake@3.14:', type='build')
     depends_on('swig@3.0.12', type='build')
 
