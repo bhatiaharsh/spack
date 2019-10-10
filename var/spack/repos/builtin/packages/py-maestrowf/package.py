@@ -40,4 +40,6 @@ class PyMaestrowf(PythonPackage):
     depends_on('py-enum34',     type=('build', 'run'), when='^python@:3.3')
     depends_on('py-enum34',     type=('build', 'run'), when='@:1.1.3')
     depends_on('py-tabulate',   type=('build', 'run'), when='@1.1.0:')
+    depends_on('py-tabulate',   type=('build', 'run'), when='@flux-dev:')
     depends_on('py-filelock',   type=('build', 'run'), when='@1.1.0:')
+    depends_on('py-filelock',   type=('build', 'run'), when='@flux-dev:')
