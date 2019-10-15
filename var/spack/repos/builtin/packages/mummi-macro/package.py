@@ -5,7 +5,7 @@
 
 from spack import *
 
-class Gridcorr2d(MakefilePackage):
+class MummiMacro(MakefilePackage):
     git        = "ssh://git@cz-bitbucket.llnl.gov:7999/~tomaso/gridcorr2d.git"
     version('master', branch='master')
 
