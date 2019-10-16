@@ -39,6 +39,7 @@ class Mummi(PythonPackage):
     depends_on('faiss@1.5.3 +python')
     depends_on('py-theano@1.0.4 +gpu ^cudnn@7.5.1-10.1-ppc64le')#TODO: these settings are for lassen
     depends_on('py-keras@2.2.4')
+    depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
 
     # maestro
     #depends_on('py-maestrowf@1.1.4dev1.1')
