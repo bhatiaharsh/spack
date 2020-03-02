@@ -18,10 +18,6 @@ class Mummi(PythonPackage):
     version('develop', branch='develop')
     version('python3', branch='python3')
 
-    #version('1.0.1', tag='v1.0.1')
-    #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
-    #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
-
     build_directory = 'mummi'
 
     extends('python@3.7.3')
@@ -37,22 +33,19 @@ class Mummi(PythonPackage):
     # ml
     depends_on('cudnn@7.5.1-10.1-ppc64le')			      	#TODO: these settings are for powerpc
     depends_on('faiss@1.5.3 +python')
-    depends_on('py-theano@1.0.4 +gpu ^cudnn@7.5.1-10.1-ppc64le')	#TODO: these settings are for powerpc
+    depends_on('py-theano@1.0.4 +cuda ^cudnn@7.5.1-10.1-ppc64le')	#TODO: these settings are for powerpc
+    depends_on('py-theano@1.0.4 +cuda')
     depends_on('py-keras@2.2.4')
-    depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
-
-    # maestro
-    #depends_on('py-maestrowf@1.1.4dev1.1')
-    #depends_on('py-maestrowf@flux-dev')
+    #depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
 
     # analysis
     depends_on('talass@process-statistics')
     depends_on('py-mdanalysis-mummi@mda0.19.2_with_ddcmd')
     depends_on('py-scikit-learn')
-    depends_on('py-matplotlib@3.0.2 +ipython ~tk')
+    depends_on('py-matplotlib@3.0.2')
 
     # gromacs
-    depends_on('fftw@3.3.8 +fma simd=vsx')			        #TODO: these settings are for powerpc
+    depends_on('fftw@3.3.8')			        #TODO: these settings are for powerpc
     depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')		#TODO: these settings are for powerpc
 
     # databroker
