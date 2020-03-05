@@ -33,8 +33,8 @@ class Mummi(PythonPackage):
     # ml
     depends_on('cudnn@7.5.1-10.1-ppc64le')			      	#TODO: these settings are for powerpc
     depends_on('faiss@1.5.3 +python')
-    depends_on('py-theano@1.0.4 +cuda ^cudnn@7.5.1-10.1-ppc64le')	#TODO: these settings are for powerpc
-    depends_on('py-theano@1.0.4 +cuda')
+    #depends_on('py-theano@1.0.4 +cuda ^cudnn@7.5.1-10.1-ppc64le')	#TODO: these settings are for powerpc
+    #depends_on('py-theano@1.0.4 +cuda')
     depends_on('py-keras@2.2.4')
     #depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
 
