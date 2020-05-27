@@ -7,41 +7,36 @@
 from spack import *
 
 
-'''
-  >  installtion of the old repo
-
-      homepage = "https://code.ornl.gov/v33/pilot2-splash-app"
-      git      = "git@code.ornl.gov:v33/pilot2-splash-app.git"
-
-      version('0.3b.0', tag='v0.3b.0') #commit='527f44e4a543f0e44daeab5d1375ce8c610eb9a0')
-      version('0.2.0', tag='v0.2.0') #commit='372e85318181530731f191b5a48b747f60bfadd2')
-      version('develop', branch='develop')
-      version('python3', branch='python3')
-      version('python3_merged', commit='33ca89df')
-
-      #version('1.0.1', tag='v1.0.1')
-      #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
-      #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
-'''
-
-
 class Mummi(PythonPackage):
     """FIXME: Put a proper description of your package here."""
 
-    homepage = "https://code.ornl.gov/v33/pilot2-splash-app"
-    git      = "git@code.ornl.gov:v33/pilot2-splash-app.git"
+    NEW_REPO = True
 
-    version('0.3b.0', tag='v0.3b.0') #commit='527f44e4a543f0e44daeab5d1375ce8c610eb9a0')
-    version('0.2.0', tag='v0.2.0') #commit='372e85318181530731f191b5a48b747f60bfadd2')
-    version('develop', branch='develop')
-    version('python3', branch='python3')
-    version('python3_merged', commit='33ca89df')
+    # -------------------------------------------------------------------
+    if not NEW_REPO:
+        homepage = "https://code.ornl.gov/v33/pilot2-splash-app"
+        git      = "git@code.ornl.gov:v33/pilot2-splash-app.git"
 
-    build_directory = 'mummi'
-    #version('1.0.1', tag='v1.0.1')
-    #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
-    #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
+        version('0.3b.0', tag='v0.3b.0') #commit='527f44e4a543f0e44daeab5d1375ce8c610eb9a0')
+        version('0.2.0', tag='v0.2.0') #commit='372e85318181530731f191b5a48b747f60bfadd2')
+        version('develop', branch='develop')
+        version('python3', branch='python3')
+        version('python3_merged', commit='33ca89df')
 
+        #version('port', branch='port/splash', git='igit@code.ornl.gov:bhatiah/mummi.git')
+        #build_directory = 'mummi'
+        #version('1.0.1', tag='v1.0.1')
+        #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
+        #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
+
+    else:
+        homepage = "https://code.ornl.gov/bhatiah/mummi"
+        git      = "git@code.ornl.gov:bhatiah/mummi.git"
+
+        version('develop', branch='develop')
+
+    # -------------------------------------------------------------------
+    
     extends('python@3.7.3')
 
     # build dependencies
@@ -67,8 +62,10 @@ class Mummi(PythonPackage):
     depends_on('py-matplotlib@3.0.2')
 
     # gromacs
-    depends_on('fftw@3.3.8')			                            #TODO: these settings are for powerpc
-    depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')		#TODO: these settings are for powerpc
+        # remove from mummi, since we will have 3x versions of gromacs
+
+    #depends_on('fftw@3.3.8')			                            #TODO: these settings are for powerpc
+    #depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')		#TODO: these settings are for powerpc
 
     # databroker
     depends_on('databroker@0.6.1 +python build_type=Debug')	    	#TODO: change to release when dbr is fixed
