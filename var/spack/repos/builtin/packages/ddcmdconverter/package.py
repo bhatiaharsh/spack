@@ -35,4 +35,6 @@ class Ddcmdconverter(PythonPackage):
     version('1.0.1',  git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git', tag='v1.0.1')
     version('1.0.0',  git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git', tag='v1.0.0')
                                 
-    depends_on('py-setuptools', type='build')
+    depends_on('py-setuptools')
+    depends_on('py-six')
+    depends_on('py-numpy')

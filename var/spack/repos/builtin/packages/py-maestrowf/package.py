@@ -19,7 +19,8 @@ class PyMaestrowf(PythonPackage):
     # git branches
     version('develop', branch='develop')
     version('master',  branch='master')
-    version('flux-dev', git='https://github.com/LLNL/maestrowf.git', branch='bugfix/flux_broker')
+    version('flux-dev', branch='bugfix/flux_broker')
+    version('flux-c3', branch='merge/flux2')
 
     # Pre-release candidates
     version('1.1.5dev',    sha256='eb3d6f31c233e2cde3b84e15c657002b83ff43d4d6b218b33d023a4f527b9e08')

@@ -36,8 +36,8 @@ class Mummi(PythonPackage):
         version('develop', branch='develop')
 
     # -------------------------------------------------------------------
-    
-    extends('python@3.7.3')
+
+    extends('python@3.7.6')
 
     # build dependencies
     depends_on('cmake@3.14.5',  type='build')
@@ -61,11 +61,15 @@ class Mummi(PythonPackage):
     depends_on('py-scikit-learn')
     depends_on('py-matplotlib@3.0.2')
 
-    # gromacs
-        # remove from mummi, since we will have 3x versions of gromacs
+    # macro
+    depends_on('gridsim2d')
 
-    #depends_on('fftw@3.3.8')			                            #TODO: these settings are for powerpc
-    #depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')		#TODO: these settings are for powerpc
+    # micro
+    depends_on('ddcmdconverter@1.0.3')
+
+    # gromacs
+    depends_on('fftw@3.3.8 +mpi~openmp precision=double,float')
+    depends_on('gromacs@2019.6 ~mpi~cuda~double~double_precision~rdtscp')
 
     # databroker
     depends_on('databroker@0.6.1 +python build_type=Debug')	    	#TODO: change to release when dbr is fixed
