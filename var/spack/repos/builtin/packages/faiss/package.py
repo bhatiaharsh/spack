@@ -7,7 +7,7 @@
 from spack import *
 
 
-class Faiss(AutotoolsPackage):
+class Faiss(AutotoolsPackage, PythonPackage):
     """Faiss is a library for efficient similarity search and clustering of
        dense vectors.
 
@@ -22,7 +22,7 @@ class Faiss(AutotoolsPackage):
     url      = "https://github.com/facebookresearch/faiss/archive/v1.6.3.tar.gz"
 
     # putting the creator's name for now
-    #  but hopefully, FAISS developers will take over
+    #  hopefully, FAISS developers will take over
     maintainers = ['bhatiaharsh']
 
     version('1.6.3', sha256='e1a41c159f0b896975fbb133e0240a233af5c9286c09a28fde6aefff5336e542')
@@ -35,40 +35,40 @@ class Faiss(AutotoolsPackage):
     variant('cuda',   default=False, description='Build with CUDA')
     variant('python', default=False, description='Build Python bindings')
 
-
     depends_on('blas')
     depends_on('cuda',     when='+cuda')
 
-    depends_on('swig',     when='+python', type='build')
+    # we dont't want "extend" because we don't want to symlink to python prefix
     depends_on('python',   when='+python', type=('build', 'run'))
     depends_on('py-numpy', when='+python', type=('build', 'run'))
-    #depends_on('py-setuptools', when='+python') #, type='build')
+    depends_on('swig',     when='+python', type='build')
 
 
+    phases = ['configure', 'build', 'install']
+
+    # --------------------------------------------------------------------------
     def configure_args(self):
-        args = []
 
+        args = []
         if '+cuda' in self.spec:
             args.append('--with-cuda={}'.format(self.spec['cuda'].prefix))
         else:
             args.append('--without-cuda')
-
         return args
 
-
+    # --------------------------------------------------------------------------
     def build(self, spec, prefix):
 
         # ----------------------------------------------------------------------
         # for v1.5.3, the makefile contains x86-specific flags
         # so, we need to remove them for powerpc
-        # for v1.6.0, this seems to have been fixed
+        # for v1.6.0 and forward, this seems to have been fixed
 
         # TODO: didn't check < 1.5.3 (but, do we care about the older versions)
         # TODO: should this be removed for other architectures as well?
         #       i.e., change the condition to target != 'x86' ?
 
         if self.version <= Version('1.5.3') and spec.architecture.target == 'power9le':
-
             makefile = FileFilter('makefile.inc')
             makefile.filter( 'CPUFLAGS     = -mavx2 -mf16c',
                             '#CPUFLAGS     = -mavx2 -mf16c')
@@ -87,28 +87,41 @@ class Faiss(AutotoolsPackage):
         if '+python' in self.spec:
             make('-C', 'python')
 
-
+    # --------------------------------------------------------------------------
     def install(self, spec, prefix):
 
         make('install')
         if '+python' in self.spec:
-            make('-C', 'python', 'install')
 
-            # ------------------------------------------------------------------
-            # temp fix
-            pversion = '3.7'
-            fversion = '1.5.3'
-
-            if self.version == Version('1.5.3'):
-                fversion = '1.5.3'
-            elif self.version == Version('1.6.3'):
-                fversion = '1.6.3'
-
-            lpath = 'lib/python{}/site-packages'.format(pversion)
-            fname = 'faiss-{}-py{}.egg'.format(fversion, pversion)
-            bname = '{}.zipped'.format(fname)
+            # faiss's suggested installation (using makefile) puts the
+            # python bindings in python prefix
+            # but, instead, we want to keep these files in the faiss prefix
+            ##make('-C', 'python', 'install')
 
             import os
-            os.chdir(os.path.join(self.spec['python'].prefix, lpath))
-            os.system('mv {} {}'.format(fname, bname))
-            os.system('unzip {} -d {}'.format(bname, fname))
+
+            cmd = '{} setup.py install --prefix={}'
+            os.chdir('python')
+            os.system(cmd.format(self.spec['python'].command, self.prefix))
+
+            # ------------------------------------------------------------------
+            # for some reason, the egg gets installed as the archive
+            # so, let's inflate it manually
+
+            fversion = self.version.string
+            pversion = self.spec['python'].version.up_to(2).string
+
+            fname = 'faiss-{}-py{}.egg'.format(fversion, pversion)
+            lpath = 'lib/python{}/site-packages'.format(pversion)
+
+            lpath = os.path.join(self.prefix, lpath)
+
+            # if this is a file, not a directory
+            if os.path.isfile(os.path.join(lpath, fname)):
+
+                bname = '{}.zip'.format(fname)
+                os.chdir(lpath)
+                os.system('mv {} {}'.format(fname, bname))
+                os.system('unzip {} -d {}'.format(bname, fname))
+
+    # --------------------------------------------------------------------------
