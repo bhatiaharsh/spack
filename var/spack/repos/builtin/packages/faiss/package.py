@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 
+import os
 from spack import *
 
 
@@ -26,28 +27,47 @@ class Faiss(AutotoolsPackage, PythonPackage):
     maintainers = ['bhatiaharsh']
 
     version('1.6.3', sha256='e1a41c159f0b896975fbb133e0240a233af5c9286c09a28fde6aefff5336e542')
-    version('1.6.2', sha256='8be8fcb943e94a93fb0796cad02a991432c0d912d8ae946f4beb5a8a9c5d4932')
-    version('1.6.1', sha256='827437c9a684fcb88ee21a8fd8f0ecd94f36e2db213f74357d0465c5a7e72ac6')
-    version('1.6.0', sha256='71a47cbb00aa0ae09b77a70d3fa1617bf7861cc7d41936458b88c7a161b03660')
     version('1.5.3', sha256='b24d347b0285d01c2ed663ccc7596cd0ea95071f3dd5ebb573ccfc28f15f043b')
-
 
     variant('cuda',   default=False, description='Build with CUDA')
     variant('python', default=False, description='Build Python bindings')
+    variant('tests',  default=False, description='Build Tests')
+
+    #TODO: figure out how to do these --
+    # +tests cannot work with ~python
+    # +tests has been fixed only for 1.6.3
+    # only 1.5.3 and 1.6.3 have been tested,
+    # other versions likely have other issues
+
 
     depends_on('blas')
-    depends_on('cuda',     when='+cuda')
+    depends_on('cuda',          when='+cuda')
 
     # we dont't want "extend" because we don't want to symlink to python prefix
-    depends_on('python',   when='+python', type=('build', 'run'))
-    depends_on('py-numpy', when='+python', type=('build', 'run'))
-    depends_on('swig',     when='+python', type='build')
+    depends_on('python',        when='+python', type=('build', 'run'))
+    depends_on('py-numpy',      when='+python', type=('build', 'run'))
+    depends_on('py-setuptools', when='+python', type=('build', 'run'))
+    depends_on('swig',          when='+python', type='build')
+    depends_on('py-scipy',      when='+tests',  type=('build', 'run'))
 
+    # --- patch for v1.6.3 -----------------------------------------------
+    # for v1.6.3, GPU build has a bug (two files need to be deleted)
+    # https://github.com/facebookresearch/faiss/issues/1159
 
-    phases = ['configure', 'build', 'install']
+    # also, some include paths in gpu/tests/Makefile are missing
+    patch('fixes-in-v1.6.3.patch', when='@1.6.3')
 
     # --------------------------------------------------------------------------
+    phases = ['configure', 'build', 'install']
+
     def configure_args(self):
+
+        #TODO: ask spack team about the correct way to force this
+        if '+tests' in self.spec and '~python' in self.spec:
+            raise InstallError('Incorrect variants: +tests must be accompanied by +python')
+
+        if '+tests' in self.spec and self.version < Version('1.6.3'):
+            raise InstallError('Incorrect variants: +tests compile only for v1.6.3')
 
         args = []
         if '+cuda' in self.spec:
@@ -74,34 +94,37 @@ class Faiss(AutotoolsPackage, PythonPackage):
                             '#CPUFLAGS     = -mavx2 -mf16c')
 
         # ----------------------------------------------------------------------
-        # for v1.6.3, GPU build has a bug (two files need to be deleted)
-        # https://github.com/facebookresearch/faiss/issues/1159
-
-        if self.version == Version('1.6.3') and '+cuda' in self.spec:
-            import os
-            os.remove('gpu/impl/PQCodeDistances.cu')
-            os.remove('gpu/impl/PQScanMultiPassNoPrecomputed.cu')
-
-        # ----------------------------------------------------------------------
         make()
         if '+python' in self.spec:
             make('-C', 'python')
+
+        # CPU tests
+        if '+tests' in self.spec:
+            os.chdir(os.path.join(self.stage.source_path, 'tests'))
+            make('tests', parallel=False)
+            os.chdir(self.stage.source_path)
+
+        # GPU tests
+        if '+tests' in self.spec and '+cuda' in self.spec:
+            os.chdir(os.path.join(self.stage.source_path, 'gpu', 'test'))
+            make('build', parallel=False)   # this target is added by the patch
+            make('demo_ivfpq_indexing_gpu', parallel=False)
+            os.chdir(self.stage.source_path)
 
     # --------------------------------------------------------------------------
     def install(self, spec, prefix):
 
         make('install')
+
         if '+python' in self.spec:
 
             # faiss's suggested installation (using makefile) puts the
             # python bindings in python prefix
             # but, instead, we want to keep these files in the faiss prefix
-            ##make('-C', 'python', 'install')
-
-            import os
-
+            # TODO: remove once the PR is accepted
+            # https://github.com/facebookresearch/faiss/pull/1271
             cmd = '{} setup.py install --prefix={}'
-            os.chdir('python')
+            os.chdir(os.path.join(self.stage.source_path, 'python'))
             os.system(cmd.format(self.spec['python'].command, self.prefix))
 
             # ------------------------------------------------------------------
@@ -123,5 +146,28 @@ class Faiss(AutotoolsPackage, PythonPackage):
                 os.chdir(lpath)
                 os.system('mv {} {}'.format(fname, bname))
                 os.system('unzip {} -d {}'.format(bname, fname))
+
+
+        def _prefix_and_install(file):
+            os.system('mv {} faiss_{}'.format(file, file))
+            install('faiss_{}'.format(file), self.prefix.bin)
+
+        # CPU tests
+        if '+tests' in self.spec:
+
+            os.chdir(os.path.join(self.stage.source_path, 'tests'))
+            _prefix_and_install('tests')
+
+        # GPU tests
+        if '+tests' in self.spec and '+cuda' in self.spec:
+
+            os.chdir(os.path.join(self.stage.source_path, 'gpu', 'test'))
+            _prefix_and_install('TestGpuIndexFlat')
+            _prefix_and_install('TestGpuIndexBinaryFlat')
+            _prefix_and_install('TestGpuIndexIVFFlat')
+            _prefix_and_install('TestGpuIndexIVFPQ')
+            _prefix_and_install('TestGpuMemoryException')
+            _prefix_and_install('TestGpuSelect')
+            _prefix_and_install('demo_ivfpq_indexing_gpu')
 
     # --------------------------------------------------------------------------
