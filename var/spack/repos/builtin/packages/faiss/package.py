@@ -77,7 +77,8 @@ class Faiss(AutotoolsPackage, PythonPackage):
         return args
 
     # --------------------------------------------------------------------------
-    def build(self, spec, prefix):
+    @run_after('configure')
+    def edit(self):
 
         # ----------------------------------------------------------------------
         # for v1.5.3, the makefile contains x86-specific flags
@@ -93,6 +94,23 @@ class Faiss(AutotoolsPackage, PythonPackage):
             makefile.filter( 'CPUFLAGS     = -mavx2 -mf16c',
                             '#CPUFLAGS     = -mavx2 -mf16c')
 
+    def build(self, spec, prefix):
+
+        '''
+        # ----------------------------------------------------------------------
+        # for v1.5.3, the makefile contains x86-specific flags
+        # so, we need to remove them for powerpc
+        # for v1.6.0 and forward, this seems to have been fixed
+
+        # TODO: didn't check < 1.5.3 (but, do we care about the older versions)
+        # TODO: should this be removed for other architectures as well?
+        #       i.e., change the condition to target != 'x86' ?
+
+        if self.version <= Version('1.5.3') and spec.architecture.target == 'power9le':
+            makefile = FileFilter('makefile.inc')
+            makefile.filter( 'CPUFLAGS     = -mavx2 -mf16c',
+                            '#CPUFLAGS     = -mavx2 -mf16c')
+        '''
         # ----------------------------------------------------------------------
         make()
         if '+python' in self.spec:
@@ -171,3 +189,6 @@ class Faiss(AutotoolsPackage, PythonPackage):
             _prefix_and_install('demo_ivfpq_indexing_gpu')
 
     # --------------------------------------------------------------------------
+    @run_after('install')
+    def inflate(self):
+        print ('inflate------------------')
