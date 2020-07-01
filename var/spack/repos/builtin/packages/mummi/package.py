@@ -48,11 +48,11 @@ class Mummi(PythonPackage):
         spack install mummi@develop                                      ^cuda@10.2.89  ^spectrum-mpi@2019.06.24 %gcc@7.3.1
     '''
     # -------------------------------------------------------------------
-    extends('python@3.7.6')
+    extends('python@3.7:') #.7.6')
 
     # build dependencies
-    depends_on('cmake@3.14.5',  type='build')
-    depends_on('swig@3.0.12',  type='build')
+    depends_on('cmake',  type='build')
+    depends_on('swig',  type='build')
 
     # generic
     depends_on('py-numpy') #@1.16.4')
@@ -60,7 +60,7 @@ class Mummi(PythonPackage):
     
     # ml
     depends_on('py-h5py +mpi')
-    depends_on('faiss@1.5.3 +python')
+    depends_on('faiss@1.6.3 +python+tests+cuda')
 
     
     # these settings are for powerpc (actually, only cudann only for lassen)
@@ -77,14 +77,16 @@ class Mummi(PythonPackage):
     depends_on('py-scikit-learn')
     depends_on('py-matplotlib') #@3.0.2')
 
+    depends_on('dssp@3.1.4')
+
     # macro
     depends_on('gridsim2d')
 
     # micro
-    depends_on('ddcmdconverter@1.0.3')
+    depends_on('ddcmdconverter@1.0.4')
 
     # gromacs
-    depends_on('fftw@3.3.8 +mpi~openmp precision=double,float')
+    depends_on('fftw@3.3.8 precision=double,float')
     depends_on('gromacs@2019.6 ~mpi~cuda~double~double_precision~rdtscp')
 
     # databroker
