@@ -28,8 +28,10 @@ class Ddcmdconverter(PythonPackage):
         
     homepage = "https://lc.llnl.gov/bitbucket/projects/XZR/repos/ddcmdconvertor/browse"
     url      = ""
+
+    version('1.0.4',  git='git@github.com:LLNL/ddcMDconverter.git', tag='v1.0.4')
                 
-    version('master', git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git')
+    #version('master', git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git')
     version('1.0.3',  git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git', tag='v1.0.3')
     version('1.0.1.dev0',  git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git', commit='2ad0498dd5e')
     version('1.0.1',  git='ssh://git@cz-bitbucket.llnl.gov:7999/xzr/ddcmdconvertor.git', tag='v1.0.1')
