@@ -41,6 +41,9 @@ class PyMdanalysisMummi(PythonPackage):
     version('mda0.19.2_ddcmd_lessmem', '72c970b64fa13d9a15dd683da833af55',
             url="https://github.com/XiaohuaZhangLLNL/mdanalysis/archive/mda0.19.2_ddcmd_lessmem.tar.gz")
 
+    version('mda_1.0.0_ddcmd', tag='mda_1.0.0_ddcmd', 
+                git='git@github.com:XiaohuaZhangLLNL/mdanalysis.git')
+
     build_directory = 'package'
 
     depends_on('python@3:')                                         # Harsh changed to python3
