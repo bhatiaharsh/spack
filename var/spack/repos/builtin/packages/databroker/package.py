@@ -5,19 +5,20 @@
 
 
 from spack import *
-#from os import system, chdir 
+#from os import system, chdir
 
 class Databroker(CMakePackage, PythonPackage):
-    """The Data Broker (DBR) is a distributed, in-memory container of key-value 
-    stores enabling applications in a workflow to exchange data through one or 
-    more shared namespaces. Thanks to a small set of primitives, applications 
-    in a workflow deployed in a (possibly) shared nothing distributed cluster, 
+    """The Data Broker (DBR) is a distributed, in-memory container of key-value
+    stores enabling applications in a workflow to exchange data through one or
+    more shared namespaces. Thanks to a small set of primitives, applications
+    in a workflow deployed in a (possibly) shared nothing distributed cluster,
     can easily share and exchange data and messages with applications."""
 
     homepage = "https://github.com/IBM/data-broker"
+    git      = "https://github.com/IBM/data-broker"
     url      = 'https://github.com/IBM/data-broker/archive/0.6.1.tar.gz'
-    #git      = "git@github.com:IBM/data-broker.git"
 
+    version('master', branch='master')
     version('0.7.0', sha256='5460fa1c5c05ad25c759b2ee4cecee92980d4dde5bc7c5f6da9242806cf22bb8')
     version('0.6.1', sha256='2c7d6c6a269d4ae97aad4d770533e742f367da84758130c283733f25df83e535')
     version('0.6.0', sha256='5856209d965c923548ebb69119344f1fc596d4c0631121b230448cc91bac4290')
@@ -29,31 +30,14 @@ class Databroker(CMakePackage, PythonPackage):
     depends_on('libevent@2.1.8', type=('build', 'run'))
 
     extends('python@3.7:',        when='+python')
-    depends_on('py-setuptools',   when='+python', type=('build', 'run'))
+    depends_on('py-setuptools',   when='+python') #, type=('build', 'run'))
 
     patch('fixes_in_v0.6.1.patch', when='@0.6.1')
     patch('fixes_in_v0.7.0.patch', when='@0.7.0')
 
     def cmake_args(self):
         args = []
-        args.append('-DDEFAULT_BE=redis')
+        #args.append('-DDEFAULT_BE=redis')
         if '+python' in self.spec:
             args.append('-DPYDBR=1')
         return args
-
-    #def install(self, spec, prefix):
-    #
-    #    '''
-    #    print ' which ruby: ', 
-    #    system('which ruby')
-    #    print 'which gem : ',
-    #    system('which gem')
-    #    system('`which gem` env')
-    #    system('`which gem` install -V redis')
-    #    
-    #    exit()
-    #    '''
-    #    #system('pip install rdbtools python-lzf')
-
-    #    #chdir(self.build_directory)
-    #    #make('install')
