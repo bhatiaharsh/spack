@@ -7,7 +7,9 @@ from spack import *
 
 
 class Callflow(PythonPackage):
-    """FIXME: Put a proper description of your package here."""
+    """CallFlow is an interactive visual analysis tool that provides a
+       high-level overview of CCTs together with semantic refinement
+       operations to progressively explore the CCTs."""
 
     homepage = "https://github.com/LLNL/CallFlow"
     url      = "https://github.com/LLNL/CallFlow/archive/v1.1.0.tar.gz"
