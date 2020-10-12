@@ -13,7 +13,12 @@ class Mummi(PythonPackage):
     NEW_REPO = True
 
     # -------------------------------------------------------------------
-    if not NEW_REPO:
+    if NEW_REPO:
+        homepage = "https://code.ornl.gov/bhatiah/mummi"
+        git      = "git@code.ornl.gov:bhatiah/mummi.git"
+        version('develop', branch='develop')
+
+    else:
         homepage = "https://code.ornl.gov/v33/pilot2-splash-app"
         git      = "git@code.ornl.gov:v33/pilot2-splash-app.git"
 
@@ -29,14 +34,8 @@ class Mummi(PythonPackage):
         #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
         #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
 
-    else:
-        homepage = "https://code.ornl.gov/bhatiah/mummi"
-        git      = "git@code.ornl.gov:bhatiah/mummi.git"
-
-        version('develop', branch='develop')
-
     # -------------------------------------------------------------------
-    
+
     extends('python@3.7.3')
 
     # build dependencies
@@ -46,7 +45,8 @@ class Mummi(PythonPackage):
     # generic
     depends_on('py-numpy@1.16.4')
     depends_on('py-scipy@1.3.0')
-    
+
+    '''
     # ml
     depends_on('cudnn@7.5.1-10.1-ppc64le')			      	        #TODO: these settings are for powerpc
     depends_on('faiss@1.5.3 +python')
@@ -54,26 +54,31 @@ class Mummi(PythonPackage):
     #depends_on('py-theano@1.0.4 +cuda')
     depends_on('py-keras@2.2.4')
     #depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
-
+    '''
     # analysis
     depends_on('talass@process-statistics')
-    depends_on('py-mdanalysis-mummi@mda0.19.2_ddcmd_lessmem')
     depends_on('py-scikit-learn')
     depends_on('py-matplotlib@3.0.2')
 
     # macro
-    #depends_on('gridsim2d')
+    #depends_on('gridsim2d@v2020-10-09.2')
 
-    # micro
-    depends_on('ddcmdconverter@1.0.3')
+    # cg and aa
+    depends_on('ddcmdconverter@1.0.4')
+    depends_on('py-mdanalysis-mummi@mda_1.0.1_ddcmd')
+    depends_on('dssp@3.1.4')
+    depends_on('py-parmed@3.2.0')
+    depends_on('py-tqdm@4.36.1')
 
-    # gromacs
-        # remove from mummi, since we will have 3x versions of gromacs
-    #depends_on('fftw@3.3.8')			                            #TODO: these settings are for powerpc
-    #depends_on('gromacs@2019.3 ~mpi~cuda~rdtscp simd=IBM_VSX')		#TODO: these settings are for powerpc
+    #depends_on('fftw@3.3.8 +mpi~openmp~pfft_patches precision=double,float')
+    depends_on('gromacs@2019.06 +cuda')
 
     # databroker
-    depends_on('databroker@0.6.1 +python build_type=Debug')	    	#TODO: change to release when dbr is fixed
+    #depends_on('databroker@0.7.1 +python')
 
     # flux
-    depends_on('flux-sched@0.8.0 +cuda')
+    #depends_on('flux-sched@0.11.0 +cuda')
+    #depends_on('py-maestrowf')
+
+    # shared daemon
+    depends_on('py-cryptography@2.3.1')

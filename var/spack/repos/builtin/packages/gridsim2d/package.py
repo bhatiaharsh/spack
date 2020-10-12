@@ -16,6 +16,8 @@ class Gridsim2d(MakefilePackage):
     version('campaign-3', branch='Campaign-3')
     version('v2020-09-16', tag='v2020-09-16')
     version('v2020-10-01', tag='v2020-10-01')
+    version('v2020-10-09', tag='v2020-10-09')
+    version('v2020-10-09.2', tag='v2020-10-09.2')
 
     depends_on('mpi')
     depends_on('fftw')
