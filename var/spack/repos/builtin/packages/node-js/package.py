@@ -43,6 +43,7 @@ class NodeJs(Package):
     variant('icu4c', default=False, description='Build with support for all locales instead of just English')
     variant('openssl', default=True,  description='Build with Spacks OpenSSL instead of the bundled version')
     variant('zlib', default=True,  description='Build with Spacks zlib instead of the bundled version')
+    variant('without-npm', default=True, description='Build without npm dependency (to be installed explicitly)')
 
     # https://github.com/nodejs/node/blob/master/BUILDING.md#unix-and-macos
     depends_on('gmake@3.81:', type='build')
@@ -83,12 +84,12 @@ class NodeJs(Package):
                 '(temporarily) remove \n %s or its link to libtool from'
                 'path')
 
-        args = [
-            '--prefix={0}'.format(self.prefix),
-            # Note: npm is updated more regularly than node.js, so we build
-            # the package instead of using the bundled version
-            '--without-npm'
-        ]
+        args = ['--prefix={0}'.format(self.prefix)]
+
+        # Note: npm is updated more regularly than node.js, so we build
+        # the package instead of using the bundled version
+        if '+without-npm' in self.spec:
+            args.append('--without-npm')
 
         if '+debug' in self.spec:
             args.append('--debug')

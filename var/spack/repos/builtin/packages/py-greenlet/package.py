@@ -10,6 +10,7 @@ class PyGreenlet(PythonPackage):
     """Lightweight in-process concurrent programming"""
 
     homepage = "https://github.com/python-greenlet/greenlet"
-    url      = "https://pypi.io/packages/source/g/greenlet/greenlet-0.4.13.tar.gz"
+    url      = "https://github.com/python-greenlet/greenlet/archive/0.4.17.tar.gz"
 
+    version('0.4.17', sha256='c63c8258eef589a86c266a05385b1ed105cf2a7fc48f47c89bb0c1de48d90c00')
     version('0.4.13', sha256='0fef83d43bf87a5196c91e73cb9772f945a4caaff91242766c5916d1dd1381e4')
