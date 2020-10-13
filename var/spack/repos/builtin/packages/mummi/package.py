@@ -22,7 +22,7 @@ class Mummi(PythonPackage):
         git      = "git@code.ornl.gov:v33/pilot2-splash-app.git"
 
         version('0.3b.0', tag='v0.3b.0') #commit='527f44e4a543f0e44daeab5d1375ce8c610eb9a0')
-        version('0.2.0', tag='v0.2.0') #commit='372e85318181530731f191b5a48b747f60bfadd2')
+        version('0.2.0', tag='v0.2.0')  #commit='372e85318181530731f191b5a48b747f60bfadd2')
         version('develop', branch='develop')
         version('python3', branch='python3')
         version('python3_merged', commit='33ca89df')
@@ -32,7 +32,6 @@ class Mummi(PythonPackage):
         #version('1.0.1', tag='v1.0.1')
         #version('2014-10-08', commit='9d38cd4e2c94c3cea97d0e2924814acc')
         #version('1.0', 'f43fb8126c138db96b489655914ed2bd5a469412')
-
 
     # --------------------------------------------------------------------------
     '''
@@ -46,14 +45,14 @@ class Mummi(PythonPackage):
     '''
     # --------------------------------------------------------------------------
 
-    extends('python@3.7.3')
+    extends('python@3.7.3:')
 
     # build dependencies
-    depends_on('cmake',  type='build')
+    depends_on('cmake', type='build')
     depends_on('swig',  type='build')
 
     # generic
-    depends_on('py-numpy') #@1.16.4')
+    depends_on('py-numpy')
 
     # ml
     depends_on('py-h5py +mpi')
@@ -64,29 +63,21 @@ class Mummi(PythonPackage):
     #depends_on('cudnn@7.5.1-10.1-ppc64le', when='+cudaml')
     #depends_on('py-theano@1.0.4 +cuda ^cudnn@7.5.1-10.1-ppc64le', when='+cudaml')
 
-    depends_on('py-theano +cuda', when='+cudaml')
-    depends_on('py-keras@2.2.4')
+    #depends_on('py-theano +cuda', when='+cudaml')
+    #depends_on('py-keras@2.2.4')
     #depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
-    '''
 
     # analysis
     depends_on('talass@process-statistics')
     depends_on('py-scikit-learn')
-    depends_on('py-matplotlib') #@3.0.2')
-
-    depends_on('dssp@3.1.4')
+    depends_on('py-matplotlib')
 
     # macro
-    depends_on('gridsim2d')
-
-    # micro
-    depends_on('ddcmdconverter@1.0.4')
+    #depends_on('gridsim2d@v2020-10-09.2')
 
     # gromacs
-    depends_on('fftw@3.3.8 precision=double,float')
-    depends_on('gromacs@2019.6 ~mpi~cuda~double~double_precision~rdtscp')
-
-    #depends_on('gridsim2d@v2020-10-09.2')
+    depends_on('fftw@3.3.8 +mpi~openmp~pfft_patches precision=double,float')
+    #depends_on('gromacs@2019.6 ~mpi~cuda~double~double_precision~rdtscp')
 
     # cg and aa
     depends_on('ddcmdconverter@1.0.4')
@@ -95,11 +86,8 @@ class Mummi(PythonPackage):
     depends_on('py-parmed@3.2.0')
     depends_on('py-tqdm@4.36.1')
 
-    #depends_on('fftw@3.3.8 +mpi~openmp~pfft_patches precision=double,float')
-    depends_on('gromacs@2019.06 +cuda')
-
     # databroker
-    #depends_on('databroker@0.7.1 +python')
+    depends_on('databroker@0.7.1 +python')
 
     # flux
     #depends_on('flux-sched@0.11.0 +cuda')
