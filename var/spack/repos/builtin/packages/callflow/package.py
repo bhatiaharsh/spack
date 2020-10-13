@@ -22,9 +22,12 @@ class Callflow(PythonPackage):
     version('1.1.0', sha256='f8b875eb62fbac04b117e3c23fccff99d768158226a9b7fa222a2b2a6acafa44')
     version('test', git='git@github.com:jarusified/CallFlow.git', branch='fix/installation')
 
-    depends_on('python@3.6:',       type=('build', 'run'))
-    depends_on('py-setuptools',     type='build')
+    variant('client', default=False, description='Build CallFlow client')
 
+    depends_on('python@3.6:',       type=('build', 'run'))
+    depends_on('py-setuptools',     type=('build', 'run'))
+
+    depends_on('py-ipython',        type=('build', 'run'))
     depends_on('py-numpy',          type=('build', 'run'))
     depends_on('py-pandas',         type=('build', 'run'))
     depends_on('py-hatchet',        type=('build', 'run'))
@@ -35,17 +38,20 @@ class Callflow(PythonPackage):
     depends_on('py-jsonschema',     type=('build', 'run'))
 
     depends_on('py-matplotlib',     type=('build', 'run'))
-    depends_on('py-networkx',       type=('build', 'run'))
+    depends_on('py-networkx@2.2',   type=('build', 'run'))
     depends_on('py-statsmodels',    type=('build', 'run'))
     depends_on('py-scikit-learn',   type=('build', 'run'))
 
-    depends_on('py-flask',          type=('build', 'run'))
+    depends_on('py-flask', type=('build', 'run'))
     depends_on('py-flask-socketio', type=('build', 'run'))
-    depends_on('node-js@13.8: ~without-npm', type=('build', 'run'))
+    depends_on('node-js@13.8: ~without-npm', when='+client', type=('build', 'run'))
 
     # Compile the npm modules included in the project
     @run_after('install')
-    def build_app(self):
+    def build_client(self):
+
+        if '~client' in self.spec:
+            return
 
         src = os.path.join(os.getcwd(), 'app')
         dst = os.path.join(self.spec.prefix, 'app')
