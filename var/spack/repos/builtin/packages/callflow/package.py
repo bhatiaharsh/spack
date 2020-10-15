@@ -20,7 +20,7 @@ class Callflow(PythonPackage):
     maintainers = ["bhatiaharsh", "jarusified"]
 
     version('1.1.0', sha256='f8b875eb62fbac04b117e3c23fccff99d768158226a9b7fa222a2b2a6acafa44')
-    version('v1.1.1', tag='v1.1.1')
+    version('1.1.1', tag='v1.1.1')
 
     depends_on('python@3.6:',       type=('build', 'run'))
     depends_on('py-setuptools',     type=('build', 'run'))
