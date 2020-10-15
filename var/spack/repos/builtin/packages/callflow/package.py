@@ -5,7 +5,6 @@
 
 import os
 import stat
-import shutil
 from spack import *
 
 
@@ -16,13 +15,12 @@ class Callflow(PythonPackage):
 
     homepage = "https://github.com/LLNL/CallFlow"
     url      = "https://github.com/LLNL/CallFlow/archive/v1.1.0.tar.gz"
+    git      =  'git@github.com:LLNL/CallFlow.git'
 
     maintainers = ["bhatiaharsh", "jarusified"]
 
     version('1.1.0', sha256='f8b875eb62fbac04b117e3c23fccff99d768158226a9b7fa222a2b2a6acafa44')
-    version('test', git='git@github.com:jarusified/CallFlow.git', branch='fix/installation')
-
-    variant('client', default=False, description='Build CallFlow client')
+    version('v1.1.1', tag='v1.1.1')
 
     depends_on('python@3.6:',       type=('build', 'run'))
     depends_on('py-setuptools',     type=('build', 'run'))
@@ -35,8 +33,6 @@ class Callflow(PythonPackage):
     depends_on('py-statsmodels',    type=('build', 'run'))
     depends_on('py-scikit-learn',   type=('build', 'run'))
 
-    #depends_on('py-pydot',          type=('build', 'run'))
-    #depends_on('py-pyyaml',         type=('build', 'run'))
     depends_on('py-colorlog',       type=('build', 'run'))
     depends_on('py-jsonschema',     type=('build', 'run'))
 
@@ -44,27 +40,33 @@ class Callflow(PythonPackage):
     depends_on('py-networkx',       type=('build', 'run'))
 
     depends_on('py-flask-socketio', type=('build', 'run'))
-    depends_on('node-js@13.8: ~without-npm', when='+client', type=('build', 'run'))
+    depends_on('node-js@13.8: ~without-npm', type=('build', 'run'))
 
     # Compile the npm modules included in the project
-    @run_after('install')
+    @run_after('build')
     def build_client(self):
 
-        if '~client' in self.spec:
-            return
+        src = os.path.join(os.getcwd(), 'app')
+        with working_dir(src):
+            os.system('npm install')
+            os.system('npm run build')
+
+    @run_after('install')
+    def install_client(self):
 
         src = os.path.join(os.getcwd(), 'app')
         dst = os.path.join(self.spec.prefix, 'app')
-        shutil.copytree(src, dst)
 
-        with working_dir(dst):
-            os.system('npm install .')
+        os.makedirs(dst, exist_ok=True)
+        install(os.path.join(src, 'app.py'), dst)
+        copy_tree(os.path.join(src, 'dist'), os.path.join(dst, 'dist'))
 
-        fname = os.path.join(self.spec.prefix.bin, 'callflow_client')
+        # create the executable
+        fname = os.path.join(self.spec.prefix.bin, 'callflow_app')
         with open(fname, 'w') as f:
             f.write('#!/bin/sh\n')
             f.write('cd {}\n'.format(dst))
-            f.write('npm run dev\n')
+            f.write('flask run\n')
 
         st = os.stat(fname)
         os.chmod(fname, st.st_mode | stat.S_IEXEC)
