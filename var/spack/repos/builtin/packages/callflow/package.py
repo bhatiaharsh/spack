@@ -15,7 +15,7 @@ class Callflow(PythonPackage):
 
     homepage = "https://github.com/LLNL/CallFlow"
     url      = "https://github.com/LLNL/CallFlow/archive/v1.1.0.tar.gz"
-    git      =  'git@github.com:LLNL/CallFlow.git'
+    git      = 'git@github.com:LLNL/CallFlow.git'
 
     maintainers = ["bhatiaharsh", "jarusified"]
 
