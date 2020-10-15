@@ -15,7 +15,7 @@ class Callflow(PythonPackage):
 
     homepage = "https://github.com/LLNL/CallFlow"
     url      = "https://github.com/LLNL/CallFlow/archive/v1.1.0.tar.gz"
-    git      = 'git@github.com:LLNL/CallFlow.git'
+    git      = 'https://github.com/LLNL/CallFlow.git'
 
     maintainers = ["bhatiaharsh", "jarusified"]
 
@@ -46,10 +46,10 @@ class Callflow(PythonPackage):
     @run_after('build')
     def build_client(self):
 
-        src = os.path.join(os.getcwd(), 'app')
-        with working_dir(src):
-            os.system('npm install')
-            os.system('npm run build')
+        with working_dir('app'):
+            npm = which('npm')
+            npm('install')
+            npm('run', 'build')
 
     @run_after('install')
     def install_client(self):
@@ -65,7 +65,7 @@ class Callflow(PythonPackage):
         fname = os.path.join(self.spec.prefix.bin, 'callflow_app')
         with open(fname, 'w') as f:
             f.write('#!/bin/sh\n')
-            f.write('cd {}\n'.format(dst))
+            f.write('cd {0}\n'.format(dst))
             f.write('flask run\n')
 
         st = os.stat(fname)
