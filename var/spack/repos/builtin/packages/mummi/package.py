@@ -55,7 +55,7 @@ class Mummi(PythonPackage):
     depends_on('py-numpy')
 
     # ml
-    depends_on('py-h5py +mpi')
+    depends_on('py-h5py ~mpi')
     depends_on('faiss@1.6.3 +python+tests+cuda')
 
     # these settings are for powerpc (actually, only cudann only for lassen)
@@ -64,7 +64,7 @@ class Mummi(PythonPackage):
     #depends_on('py-theano@1.0.4 +cuda ^cudnn@7.5.1-10.1-ppc64le', when='+cudaml')
 
     #depends_on('py-theano +cuda', when='+cudaml')
-    #depends_on('py-keras@2.2.4')
+    depends_on('py-keras@2.2.4')
     #depends_on('py-h5py@2.9.0~mpi ^hdf5~mpi+hl')
 
     # analysis
@@ -88,6 +88,7 @@ class Mummi(PythonPackage):
 
     # databroker
     depends_on('databroker@0.7.1 +python')
+    depends_on('py-pytaridx@0.0.3')
 
     # flux
     #depends_on('flux-sched@0.11.0 +cuda')
