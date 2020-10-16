@@ -5,9 +5,9 @@
 
 
 from spack import *
-#from os import system, chdir
 
-class Databroker(CMakePackage, PythonPackage):
+
+class Databroker(CMakePackage): #, PythonPackage):
     """The Data Broker (DBR) is a distributed, in-memory container of key-value
     stores enabling applications in a workflow to exchange data through one or
     more shared namespaces. Thanks to a small set of primitives, applications
@@ -28,13 +28,14 @@ class Databroker(CMakePackage, PythonPackage):
 
     depends_on('cmake@2.8:',      type='build')
     depends_on('redis@5.0.2:',    type='run')
-    depends_on('libevent@2.1.8', type=('build', 'run'))
+    depends_on('libevent@2.1.8',  type=('build', 'run'))
 
     extends('python@3.7:',        when='+python')
     depends_on('py-setuptools',   when='+python')
 
     patch('fixes_in_v0.6.1.patch', when='@0.6.1')
     patch('fixes_in_v0.7.0.patch', when='@0.7.0')
+    patch('fixes_on_summit.patch', when='@0.7.1')
 
     def cmake_args(self):
         args = []
