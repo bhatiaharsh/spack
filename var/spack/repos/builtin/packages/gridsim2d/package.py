@@ -27,6 +27,11 @@ class Gridsim2d(MakefilePackage):
     depends_on('mpi')
     depends_on('fftw')
 
+    
+    def build(self, spec, prefix):
+        make('clean')
+        make()
+
     def install(self, spec, prefix):
         mkdir(prefix.bin)
         install('gridsim2dras', prefix.bin)
