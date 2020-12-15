@@ -61,8 +61,8 @@ class FluxCore(AutotoolsPackage):
     depends_on("py-jsonschema", type=('build', 'run'), when="@0.12.0:")
     depends_on("jansson")
     depends_on("pkgconfig")
-    depends_on("yaml-cpp", when="@:0.11")
-    depends_on("lz4", when="@0.11.0:")
+    depends_on("yaml-cpp", when="@:0.11.99")
+    depends_on("lz4", when="@0.11.0:,master")
 
     # versions up to 0.8.0 uses pylint to check Flux's python binding
     # later versions provide a configure flag and disable the check by default
