@@ -6,8 +6,7 @@
 
 from spack import *
 
-
-class Databroker(CMakePackage): #, PythonPackage):
+class Databroker(CMakePackage, PythonPackage):
     """The Data Broker (DBR) is a distributed, in-memory container of key-value
     stores enabling applications in a workflow to exchange data through one or
     more shared namespaces. Thanks to a small set of primitives, applications
@@ -19,6 +18,7 @@ class Databroker(CMakePackage): #, PythonPackage):
     url      = 'https://github.com/IBM/data-broker/archive/0.6.1.tar.gz'
 
     version('master', branch='master')
+    version('0.7.1-201109', commit='d02b0c3282c94227d9b1d1ee38375e383b9c832f')
     version('0.7.1', sha256='bac340d502501bb0f929798b07a5657bd89a21190b6451106cbaba68a2badd73')
     version('0.7.0', sha256='5460fa1c5c05ad25c759b2ee4cecee92980d4dde5bc7c5f6da9242806cf22bb8')
     version('0.6.1', sha256='2c7d6c6a269d4ae97aad4d770533e742f367da84758130c283733f25df83e535')

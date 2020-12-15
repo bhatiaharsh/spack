@@ -14,8 +14,9 @@ class FluxCore(AutotoolsPackage):
     url      = "https://github.com/flux-framework/flux-core/releases/download/v0.8.0/flux-core-0.8.0.tar.gz"
     git      = "https://github.com/flux-framework/flux-core.git"
 
-    version('master',  branch='master')
+    version('master', branch='master')
     version('0.19.0', sha256='f45328a37d989c308c46639a9ed771f47b11184422cf5604249919fbd320d6f5')
+    version('0.18.0', sha256='9784bbca94177a32dbbc99728e8925bf894f3aebaa316961d6ea85df32d59545')
     version('0.17.0', sha256='3f8c6cb72982028f86a96c0098cacd3a6e9de359fa1cf077380c835a20e7b7f7')
     version('0.16.0', sha256='1582f7fb4d2313127418c34de7c9ce4f5fef00622d19cedca7bed929f4709f10')
     version('0.15.0', sha256='51bc2eae69501f802459fc82f191eb5e8ae0b4f7e9e77ac18543a850cc8445f5')
@@ -60,8 +61,8 @@ class FluxCore(AutotoolsPackage):
     depends_on("py-jsonschema", type=('build', 'run'), when="@0.12.0:")
     depends_on("jansson")
     depends_on("pkgconfig")
-    depends_on("yaml-cpp", when="@:0.11")
-    depends_on("lz4", when="@0.11.0:")
+    depends_on("yaml-cpp", when="@:0.11.99")
+    depends_on("lz4", when="@0.11.0:,master")
 
     # versions up to 0.8.0 uses pylint to check Flux's python binding
     # later versions provide a configure flag and disable the check by default
