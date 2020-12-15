@@ -7,8 +7,7 @@ from spack import *
 
 
 class Dssp(AutotoolsPackage):
-    """The source code for building the mkdssp, mkhssp, hsspconv, and hsspsoap
-       programs is bundled in the xssp project"""
+    """'mkdssp' utility. (dictionary of protein secondary structure)"""
 
     homepage = "https://github.com/cmbi/dssp"
     url      = "https://github.com/cmbi/dssp/archive/3.1.4.tar.gz"

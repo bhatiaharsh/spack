@@ -12,32 +12,35 @@ class Memsurfer(PythonPackage):
        wide variety of large-scale molecular simulations."""
 
     homepage = "https://github.com/LLNL/MemSurfer"
-    git      = "git@github.com:LLNL/MemSurfer.git"
+    git = "https://github.com/LLNL/MemSurfer.git"
+    maintainers = ['bhatiaharsh']
 
-    version('1.0', tag='v1.0', submodules=True)
-    version('master', branch='master', submodules=True)
+    version('1.0',     tag='v1.0',       submodules=True)
+    version('master',  branch='master',  submodules=True)
     version('develop', branch='develop', submodules=True)
-    version('8-lipid', git='ssh://git@cz-bitbucket.llnl.gov:7999/~bhatia4/memsurfer.git', branch='8-lipid', submodules=True)
+    #version('8-lipid', git='ssh://git@cz-bitbucket.llnl.gov:7999/~bhatia4/memsurfer.git', branch='8-lipid', submodules=True)
+    
+    variant('osmesa', default=False,
+            description='Enable OSMesa support (for VTK)')
 
-    variant('osmesa', default=False, description='Enable OSMesa support (for VTK)')
+    extends('python')
+    depends_on('python@3.7:', type=('build', 'run'))
 
-    extends('python@3.7:')
+    depends_on('cmake@3.14:', type='build')
+    depends_on('swig@3.0.12', type='build')
 
-    depends_on('cmake@3.14:')
-    depends_on('swig@3.0.12')
-    depends_on('py-cython')
-    depends_on('py-numpy')
-    depends_on('py-pip')
+    depends_on('py-cython', type='build')
+    depends_on('py-numpy', type=('build', 'run'))
 
     depends_on('eigen@3.3.7')
     depends_on('cgal@4.13 +shared~core~demos~imageio')
 
     # vtk needs to know whether to build with mesa or opengl
-    depends_on('vtk@8.1.2 ~ffmpeg~mpi+opengl2~qt~xdmf +python3 ~osmesa', when='~osmesa')
-    depends_on('vtk@8.1.2 ~ffmpeg~mpi+opengl2~qt~xdmf +python3 +osmesa', when='+osmesa')
+    vtk_conf = '~ffmpeg~mpi+opengl2~qt~xdmf+python'
+    depends_on('vtk@8.1.2 ' + vtk_conf + ' ~osmesa', when='~osmesa')
+    depends_on('vtk@8.1.2 ' + vtk_conf + ' +osmesa', when='+osmesa')
 
-    # this is needed only to resolve the conflict between
-    # the default and netcdf's spec
+    # needed only to resolve the conflict between the default and netcdf's spec
     depends_on('hdf5 +hl')
 
     # memsurfer's setup needs path to these deps to build extension modules

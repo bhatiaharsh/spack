@@ -24,9 +24,11 @@ class Qt(Package):
 
     phases = ['configure', 'build', 'install']
 
+    version('5.14.2', sha256='c6fcd53c744df89e7d3223c02838a33309bd1c291fcb6f9341505fe99f7f19fa')
     version('5.14.1', sha256='6f17f488f512b39c2feb57d83a5e0a13dcef32999bea2e2a8f832f54a29badb8')
     version('5.14.0', sha256='be9a77cd4e1f9d70b58621d0753be19ea498e6b0da0398753e5038426f76a8ba')
     version('5.13.1', sha256='adf00266dc38352a166a9739f1a24a1e36f1be9c04bf72e16e142a256436974e')
+    version('5.12.7', sha256='873783a0302129d98a8f63de9afe4520fb5f8d5316be8ad7b760c59875cd8a8d')
     version('5.12.5', sha256='a2299e21db7767caf98242767bffb18a2a88a42fee2d6a393bedd234f8c91298')
     version('5.12.2', sha256='59b8cb4e728450b21224dcaaa40eb25bafc5196b6988f2225c394c6b7f881ff5')
     version('5.11.3', sha256='859417642713cee2493ee3646a7fee782c9f1db39e41d7bb1322bba0c5f0ff4d')
@@ -47,10 +49,8 @@ class Qt(Package):
     version('4.8.5',  sha256='eb728f8268831dc4373be6403b7dd5d5dde03c169ad6882f9a8cb560df6aa138')
     version('3.3.8b', sha256='1b7a1ff62ec5a9cb7a388e2ba28fda6f960b27f27999482ebeceeadb72ac9f6e')
 
-    # Add patch for compile issues with qt3 found with use in the
-    # OpenSpeedShop project
-    variant('krellpatch', default=False,
-            description="Build with openspeedshop based patch.")
+    variant('debug',      default=False,
+            description="Build debug version.")
     variant('gtk',        default=False,
             description="Build with gtkplus.")
     variant('webkit',     default=False,
@@ -76,55 +76,46 @@ class Qt(Package):
     variant('freetype', default='spack', description='Freetype2 support',
             values=('spack', 'qt', 'none'), multi=False)
 
-    # fix installation of pkgconfig files
-    # see https://github.com/Homebrew/homebrew-core/pull/5951
-    patch('restore-pc-files.patch', when='@5.9:5.11 platform=darwin')
+    # Patches for qt@3
+    patch('qt3-accept.patch', when='@3')
+    patch('qt3-headers.patch', when='@3')
 
-    patch('qt3accept.patch', when='@3.3.8b')
-    patch('qt3krell.patch', when='@3.3.8b+krellpatch')
-    patch('qt3ptrdiff.patch', when='@3.3.8b')
-
-    # see https://bugreports.qt.io/browse/QTBUG-57656
-    patch('QTBUG-57656.patch', when='@5.8.0')
-    # see https://bugreports.qt.io/browse/QTBUG-58038
-    patch('QTBUG-58038.patch', when='@5.8.0')
-
-    # https://github.com/xboxdrv/xboxdrv/issues/188
-    patch('btn_trigger_happy.patch', when='@5.7.0:')
-
-    # https://github.com/spack/spack/issues/1517
-    patch('qt5-pcre.patch', when='@5:')
-
-    patch('qt4-pcre-include-conflict.patch', when='@4.8.6')
+    # Patches for qt@4
+    patch('qt4-configure-gcc.patch', when='@4:4.8.6 %gcc')
+    patch('qt4-87-configure-gcc.patch', when='@4.8.7 %gcc')
     patch('qt4-tools.patch', when='@4+tools')
-    if not MACOS_VERSION:
-        # Allow Qt's configure script to build the webkit option with more
-        # recent versions of gcc.
-        # https://github.com/spack/spack/issues/9205
-        # https://github.com/spack/spack/issues/9209
-        patch('qt4-gcc-and-webkit.patch', when='@4:4.8.6')
-        patch('qt4-gcc-and-webkit-487.patch', when='@4.8.7')
-    else:
-        patch('qt4-mac.patch', when='@4.8.7')
+    patch('qt4-mac.patch', when='@4.8.7 platform=darwin')
+    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925811
+    patch("qt4-qforeach.patch", when="@4 %gcc@9:")
 
-    # Fix build failure with newer versions of GCC
+    # Patches for qt@4:
+    # https://github.com/spack/spack/issues/1517
+    patch('qt4-pcre.patch', when='@4')
+    patch('qt5-pcre.patch', when='@5:')
+    # https://bugreports.qt.io/browse/QTBUG-74196
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89585
+    patch('qt4-asm-volatile.patch', when='@4')
+    patch('qt5-asm-volatile.patch', when='@5.0.0:5.12.1')
+
+    # Patches for qt@5
+    # https://bugreports.qt.io/browse/QTBUG-74219
+    patch('qt5-btn_trigger_happy.patch', when='@5.7:5.12')
+    # https://bugreports.qt.io/browse/QTBUG-57656
+    patch('qt5-8-framework.patch', when='@5.8.0 +framework')
+    # https://bugreports.qt.io/browse/QTBUG-58038
+    patch('qt5-8-freetype.patch', when='@5.8.0 freetype=spack')
+    # https://codereview.qt-project.org/c/qt/qtbase/+/245425
     patch('https://github.com/qt/qtbase/commit/a52d7861edfb5956de38ba80015c4dd0b596259b.patch',
           sha256='c49b228c27e3ad46ec3af4bac0e9985af5b5b28760f238422d32e14f98e49b1e',
           working_dir='qtbase',
           when='@5.10:5.12.0 %gcc@9:')
-
-    # Fix build of QT4 with GCC 9
-    # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925811
-    patch("qt4-gcc9-qforeach.patch", when="@4:4.999 %gcc@9")
-
-    # https://bugreports.qt.io/browse/QTBUG-74196
-    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89585
-    patch('qt4-gcc8.3-asm-volatile-fix.patch', when='@4')
-    patch('qt5-gcc8.3-asm-volatile-fix.patch', when='@5.0.0:5.12.1')
-
-    # patch overflow builtins
-    patch('qt5_11-intel-overflow.patch', when='@5.11')
-    patch('qt5_12-intel-overflow.patch', when='@5.12:')
+    # https://github.com/Homebrew/homebrew-core/pull/5951
+    patch('qt5-restore-pc-files.patch', when='@5.9:5.11 platform=darwin')
+    # https://github.com/spack/spack/issues/14400
+    patch('qt5-11-intel-overflow.patch', when='@5.11 %intel')
+    patch('qt5-12-intel-overflow.patch', when='@5.12:5.14.0 %intel')
+    # https://bugreports.qt.io/browse/QTBUG-78937
+    patch('qt5-12-configure.patch', when='@5.12')
 
     # Build-only dependencies
     depends_on("pkgconfig", type='build')
@@ -143,26 +134,31 @@ class Qt(Package):
     depends_on("gperf", when='+webkit')
     depends_on("gtkplus", when='+gtk')
     depends_on("openssl", when='+ssl')
-    depends_on("sqlite", when='+sql', type=('build', 'run'))
-    depends_on("sqlite+column_metadata", when='+sql%intel', type=('build', 'run'))
+    depends_on("sqlite+column_metadata", when='+sql', type=('build', 'run'))
 
     depends_on("libpng@1.2.57", when='@3')
+    depends_on("libsm", when='@3')
     depends_on("pcre+multibyte", when='@5.0:5.8')
     depends_on("inputproto", when='@:5.8')
-    depends_on("openssl@:1.0.999", when='@:5.9+ssl~krellpatch')
+    depends_on("openssl@:1.0.999", when='@4:5.9+ssl')
 
     depends_on("glib", when='@4:')
     depends_on("libpng", when='@4:')
     depends_on("dbus", when='@4:+dbus')
-    depends_on("gl@3.2:", when='@4:+opengl')
+    depends_on("gl", when='@4:+opengl')
 
     depends_on("harfbuzz", when='@5:')
     depends_on("double-conversion", when='@5.7:')
     depends_on("pcre2+multibyte", when='@5.9:')
 
+    # gcc@4 is not supported as of Qt@5.14
+    # https://doc.qt.io/qt-5.14/supported-platforms.html
+    conflicts('%gcc@:4.99', when='@5.14:')
+
     # Non-macOS dependencies and special macOS constraints
     if MACOS_VERSION is None:
         depends_on("fontconfig", when='freetype=spack')
+        depends_on("libsm")
         depends_on("libx11")
         depends_on("libxcb")
         depends_on("libxkbcommon")
@@ -182,6 +178,7 @@ class Qt(Package):
 
     # Mapping for compilers/systems in the QT 'mkspecs'
     compiler_mapping = {'intel': ('icc',),
+                        'apple-clang': ('clang-libc++', 'clang'),
                         'clang': ('clang-libc++', 'clang'),
                         'gcc': ('g++',)}
     platform_mapping = {'darwin': 'macx'}
@@ -291,7 +288,7 @@ class Qt(Package):
             "qmake/qmake.pri",
             "src/tools/bootstrap/bootstrap.pro"
         ]
-        if '%clang' in self.spec:
+        if '%clang' in self.spec or '%apple-clang' in self.spec:
             files_to_filter += [
                 "mkspecs/unsupported/macx-clang-libc++/qmake.conf",
                 "mkspecs/common/clang.conf"
@@ -336,10 +333,13 @@ class Qt(Package):
                     conf('g++-unix'))
 
         if self.spec.satisfies('@4'):
-            # Necessary to build with GCC 6 and other modern compilers
-            # http://stackoverflow.com/questions/10354371/
+            # The gnu98 flag is necessary to build with GCC 6 and other modern
+            # compilers (see http://stackoverflow.com/questions/10354371/);
+            # be permissive because of the abundance of older code, and hide
+            # all warnings because there are so many of them with newer
+            # compilers
             with open(conf('gcc-base'), 'a') as f:
-                f.write("QMAKE_CXXFLAGS += -std=gnu++98\n")
+                f.write("QMAKE_CXXFLAGS += -std=gnu++98 -fpermissive -w\n")
 
     @when('@4: %intel')
     def patch(self):
@@ -366,26 +366,24 @@ class Qt(Package):
     @property
     def common_config_args(self):
         # incomplete list is here http://doc.qt.io/qt-5/configure-options.html
-        openssl = self.spec['openssl']
         config_args = [
             '-prefix', self.prefix,
             '-v',
             '-opensource',
             '-{0}opengl'.format('' if '+opengl' in self.spec else 'no-'),
-            '-release',
+            '-{0}'.format('debug' if '+debug' in self.spec else 'release'),
             '-confirm-license',
-            '-openssl-linked',
-            openssl.libs.search_flags,
-            openssl.headers.include_flags,
             '-optimized-qmake',
             '-no-pch',
         ]
 
         if self.spec.variants['freetype'].value == 'spack':
             config_args.extend([
-                '-system-freetype',
-                '-I{0}/freetype2'.format(self.spec['freetype'].prefix.include)
+                '-system-freetype'
             ])
+            config_args.extend(
+                self.spec['freetype'].headers.include_flags.split()
+            )
             if not MACOS_VERSION:
                 config_args.append('-fontconfig')
 
@@ -395,7 +393,12 @@ class Qt(Package):
             config_args.append('-no-freetype')
 
         if '+ssl' in self.spec:
-            config_args.append('-openssl-linked')
+            openssl = self.spec['openssl']
+            config_args.extend([
+                '-openssl-linked',
+                openssl.libs.search_flags,
+                openssl.headers.include_flags,
+            ])
         else:
             config_args.append('-no-openssl')
 
@@ -523,6 +526,7 @@ class Qt(Package):
             '-{0}webkit'.format('' if '+webkit' in spec else 'no-'),
             '-{0}phonon'.format('' if '+phonon' in spec else 'no-'),
             '-arch', str(spec.target.family),
+            '-xmlpatterns',
         ])
 
         # Disable phonon backend until gstreamer is setup as dependency
@@ -583,6 +587,12 @@ class Qt(Package):
         if version >= Version('5.10') and '~opengl' in spec:
             config_args.extend([
                 '-skip', 'webglplugin',
+                '-skip', 'qt3d',
+            ])
+
+        if version >= Version('5.14') and '~opengl' in spec:
+            config_args.extend([
+                '-skip', 'qtquick3d',
             ])
 
         configure(*config_args)

@@ -1,77 +1,40 @@
 packages:
   all:
+    compiler: [gcc, intel, pgi, clang, xl, nag, fj, aocc]
     providers:
-      mpi: [mvapich2, spectrum-mpi]
-      gl:  [opengl, mesa]
-  spectrum-mpi:
-      buildable: False
-      version: [10.1.0, 10.1.0.2, 10.1.0-xl-gcc-4.9.3, 2017.08.24, 2018.04.27, 2018.08.13, 2018.08.30, 2019.01.31, 2019.04.19, 2019.06.24, rolling-release]
-      paths:
-        spectrum-mpi@10.1.0 arch=linux-rhel7-ppc64le: /opt/ibm/spectrum_mpi
-        spectrum-mpi@2017.08.24 %clang-coral@2017.10.13 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2017.08.24-clang-coral-2017.10-clang-coral-2017.10.13
-        spectrum-mpi@2018.04.27 %gcc@4.9.3 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2018.04.27-gcc-4.9.3
-        spectrum-mpi@2018.08.13 %gcc@4.9.3 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2018.08.13-gcc-4.9.3
-        spectrum-mpi@2018.08.30 %gcc@4.9.3 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2018.08.30-gcc-4.9.3
-        spectrum-mpi@rolling-release %gcc@4.9.3 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-rolling-release-gcc-4.9.3
-        spectrum-mpi@rolling-release %gcc@7.3.1 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-rolling-release-gcc-7.3.1
-        spectrum-mpi@2019.04.19 %gcc@7.3.1 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2019.04.19-gcc-7.3.1
-        spectrum-mpi@2019.01.31 %gcc@7.3.1 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2019.01.31-gcc-7.3.1
-        spectrum-mpi@2019.06.24 %gcc@7.3.1 arch=linux-rhel7-ppc64le: /usr/tce/packages/spectrum-mpi/spectrum-mpi-2019.06.24-gcc-7.3.1
-
-  openmpi:
-    buildable: False
-  mpich:
-    buildable: False
-  mvapich2:
-    buildable: False
-    version: [2.2]
-    paths:
-        mvapich2@2.2 %gcc@7.3.0 arch=linux-rhel7-x86_64: /usr/tce/packages/mvapich2/mvapich2-2.2-gcc-7.3.0
-        mvapich2@2.2 %gcc@7.1.0 arch=linux-rhel7-x86_64: /usr/tce/packages/mvapich2/mvapich2-2.2-gcc-7.1.0
-        mvapich2@2.2 %gcc@4.9.3 arch=linux-rhel7-x86_64: /usr/tce/packages/mvapich2/mvapich2-2.2-gcc-4.9.3
-        mvapich2@2.2 %gcc@7.3.0 arch=linux-rhel7-broadwell: /usr/tce/packages/mvapich2/mvapich2-2.2-gcc-7.3.0
-        mvapich2@2.2 %gcc@7.3.0 arch=linux-rhel7-sandybridge: /usr/tce/packages/mvapich2/mvapich2-2.2-gcc-7.3.0
-
-  intel-mpi:
-    buildable: False
-  cuda:
-    buildable: False
-    version: [8.0, 9.0, 9.1, 9.2, 10.1, 10.1.105, 10.2.89]
-    paths:
-      cuda@10.2.89 arch=linux-rhel7-power9le: /usr/tce/packages/cuda/cuda-10.2.89
-      #cuda@10.1.243 arch=linux-rhel7-power9le: /usr/tce/packages/cuda/cuda-10.1.243 
-      cuda@8.0 arch=linux-rhel7-ppc64le: /usr/local/cuda-8.0/
-      cuda@9.0 arch=linux-rhel7-ppc64le: /usr/tce/packages/cuda/cuda-9.0.176/
-      cuda@9.1 arch=linux-rhel7-x86_64: /usr/tce/packages/cuda/cuda-9.1.85/
-      cuda@9.2 arch=linux-rhel7-ppc64le: /usr/tce/packages/cuda/cuda-9.2.88/
-      cuda@10.1 arch=linux-rhel7-ppc64le: /usr/tce/packages/cuda/cuda-10.1.168/
-      #cuda@10.1.105 arch=linux-rhel7-ppc64le: /usr/tce/packages/cuda/cuda-10.1.105/
-      #cuda@10.1.168 arch=linux-rhel7-ppc64le: /usr/tce/packages/cuda/cuda-10.1.168/
-  #lua:
-  #  buildable: False
-  #  version: [5.1.4]
-  #  paths:
-  #   lua@5.1.4 arch=linux-rhel7-power9le: /usr/
-
-  fftw:
-    buildable: False
-    version: [3.3.8]
-    paths:
-        fftw@3.3.8: /usr/tcetmp/packages/fftw/fftw-3.3.8
-
-  munge:
-      buildable: False
-      paths:
-         munge@0.5.13 arch=linux-rhel7-ppc64le: /usr/bin/
-  #opengl:
-  #  paths:
-  #      opengl@4.5.0 arch=linux-rhel7-x86_64: /g/g92/bhatia4/spack_memsurfer/opengl
-  #  buildable: False
-  mesa:
-    version: [17.1,17.3]
-    paths:
-        mesa@17.1 arch=linux-rhel7-power9le:  /opt/mesa/17.1/
-        mesa@17.3 arch=linux-rhel7-x86_64:  /opt/mesa/17.3/
-        mesa@17.3 arch=linux-rhel7-broadwell:  /opt/mesa/17.3/
-        mesa@17.3 arch=linux-rhel7-sandybridge:  /opt/mesa/17.3/
-    buildable: False 
+      D: [ldc]
+      awk: [gawk]
+      blas: [openblas, amdblis]
+      daal: [intel-daal]
+      elf: [elfutils]
+      fftw-api: [fftw, amdfftw]
+      gl: [mesa+opengl, mesa18+opengl, opengl]
+      glx: [mesa+glx, mesa18+glx, opengl]
+      glu: [mesa-glu, openglu]
+      golang: [gcc]
+      iconv: [libiconv]
+      ipp: [intel-ipp]
+      java: [openjdk, jdk, ibm-java]
+      jpeg: [libjpeg-turbo, libjpeg]
+      lapack: [openblas, amdlibflame]
+      mariadb-client: [mariadb-c-client, mariadb]
+      mkl: [intel-mkl]
+      mpe: [mpe2]
+      mpi: [openmpi, mpich]
+      mysql-client: [mysql, mariadb-c-client]
+      opencl: [pocl]
+      osmesa: [mesa+osmesa, mesa18+osmesa]
+      pil: [py-pillow]
+      pkgconfig: [pkgconf, pkg-config]
+      rpc: [libtirpc]
+      scalapack: [netlib-scalapack, amdscalapack]
+      sycl: [hipsycl]
+      szip: [libszip, libaec]
+      tbb: [intel-tbb]
+      unwind: [libunwind]
+      yacc: [bison, byacc]
+      flame: [libflame, amdlibflame]
+    permissions:
+      read: world
+      write: user
+      
