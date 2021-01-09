@@ -19,7 +19,8 @@ class Callflow(PythonPackage):
 
     maintainers = ["bhatiaharsh", "jarusified"]
 
-    version('1.1.1', sha256='f02893210b770caf4d3990ccef588f6a79346513205e9b1c9f6af02fb49f9633')
+    version('1.1.1', sha256='60d2327843469f42be9366ff31d7a6afc85021af4e38b7d6704b2d8c3da7ed36')
+    version('1.1.1', sha256='a52e6e0697a406dfe391225d3cc3c5c5a12a6c86b68f0f8e47777c79fd45cb28')
     version('1.1.0', sha256='f8b875eb62fbac04b117e3c23fccff99d768158226a9b7fa222a2b2a6acafa44')
 
     depends_on('python@3.6:',       type=('build', 'run'))
@@ -39,6 +40,9 @@ class Callflow(PythonPackage):
     depends_on('py-matplotlib',     type=('build', 'run'))
     depends_on('py-networkx',       type=('build', 'run'))
 
+    '''
+    # commenting this text for released versions
+    # will test again for develop
     depends_on('py-flask-socketio', type=('build', 'run'))
     depends_on('node-js@13.8: ~without-npm', type=('build', 'run'))
 
@@ -70,3 +74,4 @@ class Callflow(PythonPackage):
 
         st = os.stat(fname)
         os.chmod(fname, st.st_mode | stat.S_IEXEC)
+    '''
